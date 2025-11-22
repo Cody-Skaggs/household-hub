@@ -146,14 +146,16 @@ Optional but excellent:
 
 # Status Summary
 
-| Mini-Project | Status |
-|--------------|--------|
-| MP1 – Product Spec | ✔️ Complete |
-| MP2 – Data Model | ✔️ Complete |
-| MP3 – Schema | ✔️ Complete |
-| MP4 – RLS Policies | 🟡 In Progress |
-| MP5 – RLS Testing | ⬜ Not Started |
-| MP6–MP12 | ⬜ Not Started |
+| Mini-Project           | Status       |
+|------------------------|--------------|
+| MP1 – Product Spec     | ✔️ Complete |
+| MP2 – Data Model       | ✔️ Complete |
+| MP3 – Schema           | ✔️ Complete |
+| MP4 – RLS Policies     | ✔️ Complete |
+| MP5 – RLS Testing      | ✔️ Complete |
+| MP6 – Android Setup    | ✔️ Complete |
+| MP7–MP12               | ⬜ Not Started |
+
 
 ---
 
