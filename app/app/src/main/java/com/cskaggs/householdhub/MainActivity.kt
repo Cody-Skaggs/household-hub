@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.cskaggs.householdhub.data.SupabaseClientProvider
 import com.cskaggs.householdhub.ui.theme.HouseholdHubTheme
+import com.cskaggs.householdhub.ui.TestSupabaseScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +40,7 @@ fun HouseholdHubApp() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            AppHomeScreen()
+            TestSupabaseScreen()
         }
     }
 }
