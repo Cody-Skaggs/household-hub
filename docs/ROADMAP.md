@@ -146,15 +146,21 @@ Optional but excellent:
 
 # Status Summary
 
-| Mini-Project           | Status       |
-|------------------------|--------------|
-| MP1 – Product Spec     | ✔️ Complete |
-| MP2 – Data Model       | ✔️ Complete |
-| MP3 – Schema           | ✔️ Complete |
-| MP4 – RLS Policies     | ✔️ Complete |
-| MP5 – RLS Testing      | ✔️ Complete |
-| MP6 – Android Setup    | ✔️ Complete |
-| MP7–MP12               | ⬜ Not Started |
+
+| Mini-Project                 | Status       |
+|-----------------------------|--------------|
+| MP1 – Product Spec          | ✅ Complete |
+| MP2 – Data Model            | ✅ Complete |
+| MP3 – Supabase Schema       | ✅ Complete |
+| MP4 – RLS Policies          | ✅ Complete |
+| MP5 – RLS Testing           | ✅ Complete |
+| MP6 – Android Setup         | ✅ Complete |
+| MP7 – Supabase Integration  | ✅ Complete |
+| MP8 – Auth Flow Design      | ⬜ Not Started |
+| MP9 – Auth Implementation   | ⬜ Not Started |
+| MP10 – Household Flows      | ⬜ Not Started |
+| MP11 – Event CRUD           | ⬜ Not Started |
+| MP12 – Calendar & Realtime  | ⬜ Not Started |
 
 
 ---
