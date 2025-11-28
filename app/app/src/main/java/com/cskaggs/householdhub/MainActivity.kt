@@ -16,6 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
+import com.cskaggs.householdhub.core.navigation.AppNavHost
 import com.cskaggs.householdhub.data.SupabaseClientProvider
 import com.cskaggs.householdhub.ui.theme.HouseholdHubTheme
 import com.cskaggs.householdhub.ui.TestSupabaseScreen
@@ -36,11 +38,12 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun HouseholdHubApp() {
     HouseholdHubTheme {
+        val navController = rememberNavController()
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            TestSupabaseScreen()
+            AppNavHost(navController = navController)
         }
     }
 }
