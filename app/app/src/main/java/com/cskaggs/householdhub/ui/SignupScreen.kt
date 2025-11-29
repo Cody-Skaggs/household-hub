@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.cskaggs.householdhub.data.SupabaseClientProvider
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Month
 
@@ -29,6 +30,7 @@ fun SignupScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var status by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
+    var signUpError by remember { mutableStateOf<String?>(null) }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -104,25 +106,30 @@ fun SignupScreen(
                     status = null
 
                     scope.launch {
+                        signUpError = null
+
                         try {
-                            supabase.auth.signUpWith(Email){
+                            // 1) Sign up the user
+                            supabase.auth.signUpWith(Email) {
                                 this.email = email
                                 this.password = password
                             }
-
+                            // 5) Navigate into the app
                             onSignupSuccess()
-                        }catch (e: Exception){
-                            status = "Sign up failed: ${e.message ?: "Unknown error"}"
-                        }finally {
+                        } catch (e: Exception) {
+                            // Show ANY error (auth, RLS, etc.)
+                            signUpError = e.message ?: "Unknown signup/profile error"
+                        } finally {
                             isLoading = false
                         }
                     }
                 },
                 enabled = !isLoading,
                 modifier = Modifier.fillMaxWidth()
-            ){
+            ) {
                 Text(if (isLoading) "Creating account..." else "Create Account")
             }
+
 
             Spacer(Modifier.height(8.dp))
 
@@ -133,6 +140,14 @@ fun SignupScreen(
             status?.let {
                 Spacer(Modifier.height(16.dp))
                 Text(it, color = MaterialTheme.colorScheme.error)
+            }
+
+            if (signUpError != null ){
+                Text(
+                    text = signUpError!!,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
         }
     }

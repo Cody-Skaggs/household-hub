@@ -1,6 +1,7 @@
 package com.cskaggs.householdhub.ui
 
 
+import android.widget.Space
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.*
@@ -12,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.cskaggs.householdhub.data.HouseholdRepository
 import com.cskaggs.householdhub.data.SupabaseClientProvider
 import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.realtime.Column
 import kotlinx.coroutines.launch
 
 @Composable
@@ -28,21 +30,30 @@ fun MainAppScreen(
     var householdName by remember { mutableStateOf<String?>(null) }
     var householdError by remember { mutableStateOf<String?> (null) }
 
+    //Dialog State
+    var showCreateDialog by remember { mutableStateOf(false) }
+    var showJoinDialog by remember { mutableStateOf(false) }
+    var createNameInput by remember { mutableStateOf("") }
+    var joinCodeInput by remember { mutableStateOf("") }
+
     LaunchedEffect(Unit) {
-        //load user email
+        // Load user email
         val user = supabase.auth.currentUserOrNull()
         userEmail = user?.email
 
-        // load current household from Supabase
-        try{
+        // Load household from Supabase
+        isHouseholdLoading = true
+        householdError = null
+        try {
             val household = HouseholdRepository.getCurrentUserHousehold()
             householdName = household?.name
-        }catch (e: Exception){
-            householdError = "Failed to load household: ${e.message ?: "Unknown Error"}"
-        }finally {
+        } catch (e: Exception) {
+            householdError = "Failed to load household: ${e.message ?: "Unknown error"}"
+        } finally {
             isHouseholdLoading = false
         }
     }
+
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -108,7 +119,8 @@ fun MainAppScreen(
             ){
                 Button(
                     onClick = {
-                        //Todo:Implement Create Household
+                        createNameInput = ""
+                        showCreateDialog = true
                     }
                 ) {
                     Text("Create Household")
@@ -116,7 +128,8 @@ fun MainAppScreen(
 
                 OutlinedButton(
                     onClick = {
-                        //TODO: Implement Join Household by invite code
+                        joinCodeInput = ""
+                        showJoinDialog = true
                     }
                 ) {
                     Text("Join Household")
@@ -141,6 +154,104 @@ fun MainAppScreen(
             ) {
                 Text("Log out")
             }
+        }
+
+        //Create Household Dialog
+        if (showCreateDialog) {
+            AlertDialog(
+                onDismissRequest = { showCreateDialog = false },
+                title = { Text("Create Household") },
+                text = {
+                    Column {
+                        Text("Enter a name for your household:")
+                        Spacer(Modifier.height(8.dp))
+                        OutlinedTextField(
+                            value = createNameInput,
+                            onValueChange = { createNameInput = it },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            if (createNameInput.isBlank()) return@TextButton
+
+                            scope.launch {
+                                isHouseholdLoading = true
+                                householdError = null
+                                try{
+                                    val household = HouseholdRepository.createHousehold(createNameInput.trim())
+                                    householdName = household.name
+                                    showCreateDialog = false
+                                }catch (e: Exception){
+                                    householdError =
+                                        "Failed to create household: ${e.message ?: "Unknown error"}"
+                                }finally {
+                                    isHouseholdLoading = false
+                                }
+                            }
+                        }
+                    ) {
+                        Text("Create")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showCreateDialog = false}) {
+                        Text("Cancel")
+                    }
+                }
+            )
+        }
+
+        // Join Household Dialog
+        if (showJoinDialog) {
+            AlertDialog(
+                onDismissRequest = { showJoinDialog = false },
+                title = { Text("Join Household") },
+                text = {
+                    Column {
+                        Text("Enter the invite code:")
+                        Spacer(Modifier.height(8.dp))
+                        OutlinedTextField(
+                            value = joinCodeInput,
+                            onValueChange = { joinCodeInput = it.uppercase() },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            if (joinCodeInput.isBlank()) return@TextButton
+
+                            scope.launch {
+                                isHouseholdLoading = true
+                                householdError = null
+                                try {
+                                    val household = HouseholdRepository.joinHousehold(joinCodeInput.trim())
+                                    householdName = household.name
+                                    showJoinDialog = false
+                                }catch (e: Exception){
+                                    householdError =
+                                        "failed to join household: ${e.message ?: "Unknown Error"}"
+                                }finally {
+                                    isHouseholdLoading = false
+                                }
+                            }
+                        }
+                    ) {
+                        Text("Join")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showJoinDialog = false}) {
+                        Text("cancel")
+                    }
+                }
+            )
         }
     }
 }
